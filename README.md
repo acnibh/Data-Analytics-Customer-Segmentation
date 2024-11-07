@@ -111,18 +111,24 @@ Overall, the highest quantity of products is purchased at the end of the year. H
 ### SEGMENTATION
 #### Plantinum & Gold 
 ![image](https://github.com/user-attachments/assets/e03a7a65-efdd-427f-83dd-85d00f1187f3)
+Platinum customers are the best ones, while Gold customers are those who spend a lot of money and are loyal. These customers make significant purchases at the end of the year but continue to buy frequently throughout the months. The three products they purchase the most are the Popcorn Holder, White Hanging Heart T-Light Holder, and Brocade Ring Purse.
+
 
 ![image](https://github.com/user-attachments/assets/a29d3d85-81f6-4b3c-8d89-90da7fbc92f6)
+For the return quantities of this group, there was a spike in August 2011, with the top 8 returned products being: PANTRY CHOPPING BOARD, HOME SWEET HOME MUG, COLOUR GLASS STAR T-LIGHT HOLDER, VINTAGE BILLBOARD TEA MUG, REGENCY TEA PLATE ROSES, SAVE THE PLANET MUG, WHITE HANGING HEART T-LIGHT HOLDER, and PLACE SETTING WHITE HEART.
 
 ### Silver & Copper
+Silver customers are those with potential to become loyal and valuable clients. These customers have contributed well in the past, but have not returned for a while. The customers who are at risk of being lost are those in the Copper group.
 ![image](https://github.com/user-attachments/assets/fc170a81-cea2-4482-9792-938372cd2e97)
+
 ![image](https://github.com/user-attachments/assets/4ecfd5dc-648e-44bb-9e1c-99920a10ef98)
 
+The top three products favored by these two groups are PAPER CRAFT, WORLD WAR 2, and JUMBO BAG. These customers made a significant purchase spike in November, mainly buying the PAPER CRAFT product. However, the most returned product is also PAPER CRAFT, which suggests that there may be an issue with this product, indicating it might not be perfect yet.
 ### Iron
 ![image](https://github.com/user-attachments/assets/c1263a4a-4773-4199-b8c9-a3b1a36d623b)
 ![image](https://github.com/user-attachments/assets/6f8babb3-526d-4b85-8a10-d5c0d7156916)
 
-
+The Iron group consists of lost customers or new customers. The clearest patterns for these groups appear in two periods: January and November. In January, the lost customers primarily purchased the MEDIUM CERAMIC TOP STORAGE JAR, which accounted for nearly 80% of their purchases. However, the return rate for this product was very high, indicating that it was the main cause of customer loss.
 
 ## RECOMMENDATION & OBJECTIVES
 ![image](https://github.com/user-attachments/assets/89dafdc6-41d2-4a80-b54a-28f88f51266a)
