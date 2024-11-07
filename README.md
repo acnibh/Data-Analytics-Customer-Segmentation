@@ -9,32 +9,31 @@ The [Online Retail](https://archive.ics.uci.edu/dataset/352/online+retail) a tra
 ## Data Description & Data Cleansing
 ### 1. Data Description
 Let's see the description of each column:
+![image](https://github.com/user-attachments/assets/a46ac8f8-e857-410d-b0f9-3984f27bfed1)
 
-- InvoiceNo: A unique identifier for the invoice. An invoice number shared across rows means that those transactions were performed in a single invoice (multiple purchases).
-- StockCode: Identifier for items contained in an invoice.
-- Description: Textual description of each of the stock item.
-- Quantity: The quantity of the item purchased.
-- InvoiceDate: Date of purchase.
-- UnitPrice: Value of each item.
-- CustomerID: Identifier for customer making the purchase.
-- Country: Country of customer
 ### 2. Data Cleansing
 
-![image](https://github.com/acnibh/Data-Analytics-Customer-Segmentation/assets/146699917/0902ec24-9656-4db0-93f0-0db616c241f4)
-We can observe that the columns Quantity, Unitprice, and Description contain sales data, and most of those rows do not have a Customer ID. Note that for all these records we do not have the customer ID. So we conclude that we can erase all records in that quantity or the price and negative. In addition, by the foregoing summary we see that there are 135,080 records without customer identification that we may also disregard.
-## OVERVIEW
-![image](https://github.com/acnibh/Data-Analytics-Customer-Segmentation/assets/146699917/5c58539a-b18f-49bd-953f-bf9ec7549ed2)
+![image](https://github.com/user-attachments/assets/a1bb5cd3-5b94-4282-91d6-d0f5d9e71d31)
 
-## Exploratory Data Analysis on Customer Segments
-After the data cleaning process, exploratory analysis on the dataset is performed and the following insights are obtained :
-### 1. Inernal Market & Customer Retention
-  ![image](https://github.com/acnibh/Data-Analytics-Customer-Segmentation/assets/146699917/3d77abed-37d1-4b12-b649-f57fdfeff8c1)
+We can see that the 'Description' column has 0.27% null values, and the 'CustomerID' column has 24.9% null values.
 
+![image](https://github.com/user-attachments/assets/41933c7d-7618-438d-a233-4e65bf56dc62)
+Furthermore, I found 0.01% unusual values in the 'Description' column and 1.96% values in the 'Quantity' column that are less than 0, which leads me to suspect these values represent product quantities that customers returned to the shop.
+![image](https://github.com/user-attachments/assets/36955ff9-0717-41ed-a22e-e71ed926a73b)
+After further investigation of the negative values in the 'Quantity' column and the related values in other columns, I confirmed that the negative values in the 'Quantity' column represent returned product quantities, and such orders are identified by an 'InvoiceNo' value that starts with the prefix 'C'.
+![image](https://github.com/user-attachments/assets/6869bee4-d3c2-4c99-bd7c-70a1cd7055c7)
+Based on this assumption, I further examined the details of the prefixes in the 'InvoiceNo' values, as well as other columns like 'StockCode' and 'Description.' I found that the data table also includes information on payment methods, shipping methods, and more.
+![image](https://github.com/user-attachments/assets/cd35b8b0-0e4e-4e86-9d0b-911932225ac9)
+To facilitate customer segmentation analysis and provide recommendations to improve and increase sales, I decided to separate transaction data from data serving other purposes. I also removed the 24.9% of null values in the 'CustomerID' column.
 
-  The data indicates that the main contributors to the store's revenue are domestic customers (United Kingdom), accounting for 82.01% of the revenue, with a customer retention rate of 92.09%. This suggests that 
-  we should focus on domestic customers and customer retention to increase revenue.
-### 2. Customer Segmentation
-  ![image](https://github.com/acnibh/Data-Analytics-Customer-Segmentation/assets/146699917/2864b452-6d7e-4bc0-b659-62681cd254ce)
+![image](https://github.com/user-attachments/assets/373f8e6c-9484-47cd-8bfe-f6d8f3d95c0b)
+
+Before proceeding with the analysis, I will segment customers into various tiers: Platinum, Gold, Silver, Copper, and Iron.
+![image](https://github.com/user-attachments/assets/bb75dc26-c318-4fba-9155-0326189f0f3f)
+
+I classified customers using the RFM method combined with percentiles. For example, with Frequency, I sorted the values in descending order and used the PERCENT_RANK() function to label them. Customers with a Frequency > 0.75 are assigned to Tier 1, > 0.5 to Tier 2, > 0.25 to Tier 3, and the rest to Tier 4.
+
+The same approach applies to R (Recency) and M (Monetary). However, there's a slight difference for Recency: we sort it in ascending order, as a lower recency value indicates a better (more recent) customer.
   ```SQL
 -- Collect data to identify customer segmentation
 WITH joined_table AS (
@@ -82,53 +81,52 @@ FROM rfm_table
 ) 
 	  SELECT *
         , CASE
-            WHEN rfm_score = 111 THEN 'Best Customers' -- KH Hang tot nhat
-            WHEN rfm_score LIKE '[3-4][3-4][1-4]' THEN 'Lost Bad Customer' -- KH r?i b? mà còn sieu te
-			WHEN rfm_score LIKE '[3-4]2[1-4]' THEN 'Lost Customers' -- KH roi bo nhung nhieu value (F = 3,4,5 )
-			WHEN rfm_score LIKE '21[1-4]' THEN 'Almost Lost' --sap mat KH nay
-			WHEN rfm_score LIKE '11[2-4]' THEN 'Loyal Customers'
-			WHEN rfm_score LIKE '[1-2][1-3]1' THEN 'Big Spenders' -- KH chi nhiu tien
-			WHEN rfm_score LIKE '[1-2]4[1-4]' THEN 'New Customers' -- KH moi nen frequency chua nhiu
-			WHEN rfm_score LIKE '[3-4]1[1-4]' THEN 'Hibernating' -- KH ngu dong (truoc do tung rat tot)
-			WHEN rfm_score LIKE '[1-2][2-3][2-4]' THEN 'Potential Loyalists' -- KH co tim nang
+            WHEN rfm_score = 111 THEN 'Plantinum' 
+            WHEN rfm_score LIKE '[3-4][3-4][1-4]' THEN 'Iron' -- KH r?i b? mà còn sieu te
+			WHEN rfm_score LIKE '[3-4]2[1-4]' THEN 'Copper' -- KH roi bo nhung nhieu value (F = 3,4,5 )
+			WHEN rfm_score LIKE '21[1-4]' THEN 'Copper' --sap mat KH nay
+			WHEN rfm_score LIKE '11[2-4]' THEN 'Gold'
+			WHEN rfm_score LIKE '[1-2][1-3]1' THEN 'Gold' -- KH chi nhiu tien
+			WHEN rfm_score LIKE '[1-2]4[1-4]' THEN 'Iron' -- KH moi nen frequency chua nhiu
+			WHEN rfm_score LIKE '[3-4]1[1-4]' THEN 'Iron' -- KH ngu dong (truoc do tung rat tot)
+			WHEN rfm_score LIKE '[1-2][2-3][2-4]' THEN 'Silver' -- KH co tim nang
 			ELSE 'unknown' END AS segment
 FROM table_score
 ```
-  
 
-  In this stage of analysis the customer segmentation was done by developing an RFM Model. Based on RFM and utilizing Quartiles (Descriptive Statistics) to divide into 4 tiers from 1,2,3,4 in ascending order for 
-  Recency, Frequency, Monetary values, we can combine these tiers to classify customers into different groups such as  Best Customers (111), Lost Bad Customers ([3-4][3-4][1-4]), Lost Customers ([3-4]2[1-4]), 
-  Almost Lost (21[1-4]), Loyal Customers (11[2-4]), Big Spenders ([1-2][1-3]1), New Customers ([1-2]4[1-4]), Hibernating ([3-4]1[1-4]), Potential Loyalists ([1-2][2-3][2-4]).
 
-  When starting to explore the data, the results returned 7 customer segment groups for the online retail dataset:
-  - Lost Bad Customers
-  - New Customers
-  - Big Spenders
-  - Best Customers
-  - Potential Loyalists
-  - Lost Customers
-  - Almost Lost
-  ### Customer Behavior
-  
-  ![image](https://github.com/acnibh/Data-Analytics-Customer-Segmentation/assets/146699917/9071d064-f977-4f6d-94fe-ddddddd8f71d)
-  
-  
-  The Big Spenders, Potential, Best, Loyal, and returning customers in the New customer segment, despite of smaller numbers, they contribute significantly to the store's revenue. Most of these customer groups 
-  are domestic wholesalers, with a few from other countries, hence they tend to make large purchases for their businesses. Particularly during major holidays in the UK such as New Year, Halloween, and Christmas, 
-  they tend to make bulk purchases a month before and at the beginning of the holiday month. This is the main reason why revenue spikes sharply in September, October, and November and tends to decrease in 
-  December.
-  
-  ![image](https://github.com/acnibh/Data-Analytics-Customer-Segmentation/assets/146699917/7abc0c79-078b-4ced-ad9b-0ae652c98f4d)
 
-  In the other months, there tends to be a flat trend due to the return of these customer segments, and some customers with higher Frequency tend to have higher Monetary values.
-  
-  ![image](https://github.com/acnibh/Data-Analytics-Customer-Segmentation/assets/146699917/e775b74c-9c4b-4761-92d8-5658f3d713a3)
-  
-  In December, a new product called PAPER CRAFT, LITTLE BIRDIE attracted many new customer segments to purchase more than other products, and it successfully attracted new customers to the store.
 
-## Recommendations
-- Focus on attracting new customers and retaining returning customers for future purchases by offering discounts when purchasing additional products or when buying two or more types of products.
-- Introduce post-purchase policies and high-priority benefits or promotions for Big Spenders to encourage them to become Best Customers. Additionally, increase purchase incentives for Potential customer groups to boost their buying frequency.
+
+## DATA ANALYSIS
+### OVERALL
+![image](https://github.com/user-attachments/assets/9b5a1c8a-1460-4857-89d7-47b7a7ddd5c9)
+The customers of this online shop come from various countries, but the largest source of revenue comes from the UK.
+
+
+![image](https://github.com/user-attachments/assets/705b2ac3-4325-4cf8-baa0-b8f4f4c694f7)
+Overall, the highest quantity of products is purchased at the end of the year. However, since most customers are wholesalers, they tend to buy in bulk about a month in advance, especially for major holidays such as Halloween, New Year, and Christmas. In contrast, the first two quarters see a slight decrease in quantities, partly because there are fewer major holidays during this period.
+
+
+### SEGMENTATION
+#### Plantinum & Gold 
+![image](https://github.com/user-attachments/assets/e03a7a65-efdd-427f-83dd-85d00f1187f3)
+
+![image](https://github.com/user-attachments/assets/a29d3d85-81f6-4b3c-8d89-90da7fbc92f6)
+
+### Silver & Copper
+![image](https://github.com/user-attachments/assets/fc170a81-cea2-4482-9792-938372cd2e97)
+![image](https://github.com/user-attachments/assets/4ecfd5dc-648e-44bb-9e1c-99920a10ef98)
+
+### Iron
+![image](https://github.com/user-attachments/assets/c1263a4a-4773-4199-b8c9-a3b1a36d623b)
+![image](https://github.com/user-attachments/assets/6f8babb3-526d-4b85-8a10-d5c0d7156916)
+
+
+
+## RECOMMENDATION & OBJECTIVES
+![image](https://github.com/user-attachments/assets/89dafdc6-41d2-4a80-b54a-28f88f51266a)
+
   
 
 
